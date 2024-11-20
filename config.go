@@ -478,12 +478,12 @@ func loadConfig(ctx context.Context) (*config, []string, error) {
 
 	if cfg.RPCUser != "" {
 		cfg.Username = cfg.RPCUser
-	} else {
+	} else if cfg.Username != "" {
 		log.Warn("The 'username' attribute in the config file is outdated. You should update it to 'rpcuser'")
 	}
 	if cfg.RPCPass != "" {
 		cfg.Password = cfg.RPCPass
-	} else {
+	} else if cfg.Password != "" {
 		log.Warn("The 'password' attribute in the config file is outdated. You should update it to 'rpcpass'")
 	}
 	if cfg.TBOpts.BalanceToMaintainAbsolute != nil {
