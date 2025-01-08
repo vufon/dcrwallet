@@ -2617,7 +2617,9 @@ func (t *ticketbuyerServer) RunTicketBuyer(req *pb.RunTicketBuyerRequest, svr pb
 	if req.BalanceToMaintain < 0 {
 		return status.Errorf(codes.InvalidArgument, "Negative balance to maintain given")
 	}
-
+	if req.MaxTicketPrice < 0 {
+		return status.Errorf(codes.InvalidArgument, "Negative max ticket price is invalid")
+	}
 	var mixedAccount uint32
 	var mixedAccountBranch uint32
 	var mixedSplitAccount uint32
@@ -2659,6 +2661,7 @@ func (t *ticketbuyerServer) RunTicketBuyer(req *pb.RunTicketBuyerRequest, svr pb
 		Account:            req.Account,
 		VotingAccount:      req.VotingAccount,
 		Maintain:           dcrutil.Amount(req.BalanceToMaintain),
+		MaxTicketPrice:     dcrutil.Amount(req.MaxTicketPrice),
 		VSP:                vspClient,
 		Mixing:             req.EnableMixing,
 		MixedAccount:       mixedAccount,

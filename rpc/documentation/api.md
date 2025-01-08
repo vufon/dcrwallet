@@ -2802,6 +2802,8 @@ The users may specify a balance to maintain.
 
 - `int64 balance_to_maintain`: When set, the account will purchase as many tickets as possible without going under this amount.
 
+- `int64 max_ticket_price`: When set, the account will purchase when the ticket price does not exceed this price.
+
 **Response:** `stream RunTicketBuyerResponse`
 
 **Expected errors:**
