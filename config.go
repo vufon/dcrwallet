@@ -187,6 +187,7 @@ type config struct {
 
 type ticketBuyerOptions struct {
 	BalanceToMaintainAbsolute *cfgutil.AmountFlag `long:"balancetomaintainabsolute" description:"Amount of funds to keep in wallet when purchasing tickets"`
+	BalanceToMaintain         *cfgutil.AmountFlag `long:"balancetomaintain" description:"Amount of funds to keep in wallet when purchasing tickets"`
 	Limit                     uint                `long:"limit" description:"Buy no more than specified number of tickets per block"`
 	VotingAccount             string              `long:"votingaccount" description:"Account used to derive addresses specifying voting rights"`
 	MaxTicketPrice            *cfgutil.AmountFlag `long:"maxticketprice" description:"Don't buy when the price is too high"`
@@ -383,9 +384,9 @@ func loadConfig(ctx context.Context) (*config, []string, error) {
 
 		// Ticket Buyer Options
 		TBOpts: ticketBuyerOptions{
-			BalanceToMaintainAbsolute: cfgutil.NewAmountFlag(defaultBalanceToMaintainAbsolute),
-			Limit:                     defaultTicketbuyerLimit,
-			MaxTicketPrice:            cfgutil.NewAmountFlag(defaultMaxTicketPrice),
+			BalanceToMaintain: cfgutil.NewAmountFlag(defaultBalanceToMaintainAbsolute),
+			Limit:             defaultTicketbuyerLimit,
+			MaxTicketPrice:    cfgutil.NewAmountFlag(defaultMaxTicketPrice),
 		},
 
 		VSPOpts: vspOptions{
@@ -439,6 +440,12 @@ func loadConfig(ctx context.Context) (*config, []string, error) {
 			return loadConfigError(err)
 		}
 		configFileError = err
+	}
+
+	if cfg.TBOpts.BalanceToMaintainAbsolute != nil {
+		log.Warn("The 'ticketbuyer.balancetomaintainabsolute' attribute in the config file is outdated. You should update it to 'ticketbuyer.balancetomaintain'")
+	} else {
+		cfg.TBOpts.BalanceToMaintainAbsolute = cfg.TBOpts.BalanceToMaintain
 	}
 
 	// Parse command line options again to ensure they take precedence.
